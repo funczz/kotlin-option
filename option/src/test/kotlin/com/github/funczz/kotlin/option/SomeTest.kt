@@ -13,8 +13,8 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: Serialization" {
             val expected = "hello world."
-            val origin = Option.some { "hello world." }
-            val actual = origin.dump().load() as Option<*>
+            val origin = RoOption.some { "hello world." }
+            val actual = origin.dump().load() as RoOption<*>
 
             actual.javaClass shouldBe origin.javaClass
             actual shouldNotBeSameInstanceAs origin
@@ -22,34 +22,34 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
         }
 
         "Some: toString" {
-            Option.some { "hello world." }.toString() shouldBe "Some(hello world.)"
-            Option.some { 0 }.toString() shouldBe "Some(0)"
+            RoOption.some { "hello world." }.toString() shouldBe "Some(hello world.)"
+            RoOption.some { 0 }.toString() shouldBe "Some(0)"
         }
 
         "Some: hashCode" {
-            Option.some { "hello world." }.hashCode() shouldBe Option.some { "hello world." }.hashCode()
-            Option.some { "hello world." }.hashCode() shouldNotBe Option.some { "HELLO WORLD." }.hashCode()
-            Option.some { "hello world." }.hashCode() shouldNotBe Option.some { 0 }.hashCode()
-            Option.some { "hello world." }.hashCode() shouldNotBe "hello world.".hashCode()
+            RoOption.some { "hello world." }.hashCode() shouldBe RoOption.some { "hello world." }.hashCode()
+            RoOption.some { "hello world." }.hashCode() shouldNotBe RoOption.some { "HELLO WORLD." }.hashCode()
+            RoOption.some { "hello world." }.hashCode() shouldNotBe RoOption.some { 0 }.hashCode()
+            RoOption.some { "hello world." }.hashCode() shouldNotBe "hello world.".hashCode()
         }
 
         "Some: equals" {
-            Option.some { "hello world." }.equals(Option.some { "hello world." }) shouldBe true
-            Option.some { "hello world." }.equals(Option.some { "HELLO WORLD." }) shouldBe false
-            Option.some { "hello world." }.equals(Option.some { 0 }) shouldBe false
+            RoOption.some { "hello world." }.equals(RoOption.some { "hello world." }) shouldBe true
+            RoOption.some { "hello world." }.equals(RoOption.some { "HELLO WORLD." }) shouldBe false
+            RoOption.some { "hello world." }.equals(RoOption.some { 0 }) shouldBe false
         }
 
         "Some: isNone" {
-            Option.some { "hello world." }.isNone shouldBe false
+            RoOption.some { "hello world." }.isNone shouldBe false
         }
 
         "Some: isSome" {
-            Option.some { "hello world." }.isSome shouldBe true
+            RoOption.some { "hello world." }.isSome shouldBe true
         }
 
         "Some: getOrElse" {
             val expected = "hello world."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             val actual = option.getOrElse { "HELLO WORLD." }
 
             actual shouldBe expected
@@ -57,7 +57,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: getOrNull" {
             val expected = "hello world."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             val actual = option.getOrNull()
 
             actual shouldBe expected
@@ -65,23 +65,23 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: getOrThrow" {
             val expected = "hello world."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             val actual = option.getOrThrow()
 
             actual shouldBe expected
         }
 
-        "Some: Optional.toOption" {
-            val expected = Option.some { "hello world." }
+        "Some: Optional.toRoOption" {
+            val expected = RoOption.some { "hello world." }
             val optional = Optional.of("hello world.")
-            val actual = optional.toOption()
+            val actual = optional.toRoOption()
 
             actual shouldBe expected
         }
 
         "Some: toOptional" {
             val expected = Optional.of("hello world.")
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             val actual = option.toOptional()
 
             actual shouldBe expected
@@ -89,7 +89,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: match" {
             val expected = "hello world."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.match { actual = it }
 
@@ -98,7 +98,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: filter" {
             val expected = true
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             val actual = option.filter { it == "hello world." }
 
             actual.isSome shouldBe expected
@@ -106,7 +106,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some -> None: filter" {
             val expected = false
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             val actual = option.filter { it == "HELLO WORLD." }
 
             actual.isSome shouldBe expected
@@ -114,7 +114,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: fold" {
             val expected = "hello world."
-            val option = Option.some { expected }
+            val option = RoOption.some { expected }
             val actual = option.fold(
                 none = { "None" },
                 some = { it }
@@ -125,7 +125,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: map" {
             val expected = "HELLO WORLD."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.map {
                 it.uppercase()
@@ -139,7 +139,7 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: mapOrElse" {
             val expected = "HELLO WORLD."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.mapOrElse(
                 fn = { it.uppercase() },
@@ -154,10 +154,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: andThen" {
             val expected = "HELLO WORLD."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.andThen {
-                Option.tee { it.uppercase() }
+                RoOption.tee { it.uppercase() }
             }.match(
                 none = {},
                 some = { actual = it }
@@ -168,10 +168,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some -> None: andThen" {
             val expected = "None"
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.andThen {
-                Option.tee { null }
+                RoOption.tee { null }
             }.match(
                 none = { actual = expected },
                 some = {}
@@ -182,10 +182,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: orElse" {
             val expected = "hello world."
-            val option = Option.some { expected }
+            val option = RoOption.some { expected }
             var actual = ""
             option.orElse {
-                Option.tee { "orElse" }
+                RoOption.tee { "orElse" }
             }.match(
                 none = {},
                 some = { actual = it }
@@ -196,11 +196,11 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some: andThenOrElse" {
             val expected = "hello world."
-            val option = Option.some { 0 }
+            val option = RoOption.some { 0 }
             var actual = ""
             option.andThenOrElse(
-                fn = { Option.tee { (0..it).joinToString { expected } } },
-                or = { Option.tee { "andThenOrElse" } }
+                fn = { RoOption.tee { (0..it).joinToString { expected } } },
+                or = { RoOption.tee { "andThenOrElse" } }
             ).match(
                 none = {},
                 some = { actual = it }
@@ -211,10 +211,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some, None -> Some: xor" {
             val expected = "hello world."
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.xor {
-                Option.tee { null }
+                RoOption.tee { null }
             }.match(
                 none = {},
                 some = { actual = it }
@@ -225,10 +225,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some, Some -> None: xor" {
             val expected = "None"
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.xor {
-                Option.tee { "xor" }
+                RoOption.tee { "xor" }
             }.match(
                 none = { actual = expected },
                 some = {}
@@ -239,10 +239,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some, None -> None: zip" {
             val expected = "None"
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.zip {
-                Option.tee { null }
+                RoOption.tee { null }
             }.match(
                 none = { actual = expected },
                 some = {}
@@ -253,10 +253,10 @@ internal class SomeTest : StringSpec(), ISerializableUtil {
 
         "Some, Some -> Some: zip" {
             val expected = "hello world. zip"
-            val option = Option.some { "hello world." }
+            val option = RoOption.some { "hello world." }
             var actual = ""
             option.zip {
-                Option.tee { "zip" }
+                RoOption.tee { "zip" }
             }.match(
                 none = {},
                 some = { actual = "${it.first} ${it.second}" }

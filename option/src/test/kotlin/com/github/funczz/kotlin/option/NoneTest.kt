@@ -14,8 +14,8 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: Serialization" {
             val expected = true
-            val origin = Option.none<String>()
-            val actual = origin.dump().load() as Option<*>
+            val origin = RoOption.none<String>()
+            val actual = origin.dump().load() as RoOption<*>
 
             actual.javaClass shouldBe origin.javaClass
             actual shouldNotBeSameInstanceAs origin
@@ -23,33 +23,33 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
         }
 
         "None: toString" {
-            Option.none<String>().toString() shouldBe "None"
+            RoOption.none<String>().toString() shouldBe "None"
         }
 
         "None: hashCode" {
-            Option.none<String>().hashCode() shouldBe Option.none<String>().hashCode()
-            Option.none<String>().hashCode() shouldBe Option.none<Int>().hashCode()
-            Option.none<String>().hashCode() shouldNotBe Option.some { "hello world." }.hashCode()
-            Option.none<String>().hashCode() shouldNotBe "hello world.".hashCode()
+            RoOption.none<String>().hashCode() shouldBe RoOption.none<String>().hashCode()
+            RoOption.none<String>().hashCode() shouldBe RoOption.none<Int>().hashCode()
+            RoOption.none<String>().hashCode() shouldNotBe RoOption.some { "hello world." }.hashCode()
+            RoOption.none<String>().hashCode() shouldNotBe "hello world.".hashCode()
         }
 
         "None: equals" {
-            Option.none<String>().equals(Option.none<String>()) shouldBe true
-            Option.none<String>().equals(Option.none<Int>()) shouldBe true
-            Option.none<String>().equals(0) shouldBe false
+            RoOption.none<String>().equals(RoOption.none<String>()) shouldBe true
+            RoOption.none<String>().equals(RoOption.none<Int>()) shouldBe true
+            RoOption.none<String>().equals(0) shouldBe false
         }
 
         "None: isNone" {
-            Option.none<String>().isNone shouldBe true
+            RoOption.none<String>().isNone shouldBe true
         }
 
         "None: isSome" {
-            Option.none<String>().isSome shouldBe false
+            RoOption.none<String>().isSome shouldBe false
         }
 
         "None: getOrElse" {
             val expected = "hello world."
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             val actual = option.getOrElse { "hello world." }
 
             actual shouldBe expected
@@ -57,7 +57,7 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: getOrNull" {
             val expected = null
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             val actual = option.getOrNull()
 
             actual shouldBe expected
@@ -65,25 +65,25 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: getOrThrow" {
             val expected = "None.getOrThrow"
-            val option = Option.none<String>()
-            val actual = shouldThrow<OptionException> {
+            val option = RoOption.none<String>()
+            val actual = shouldThrow<RoOptionException> {
                 option.getOrThrow()
             }.message
 
             actual shouldBe expected
         }
 
-        "None: Optional.toOption" {
-            val expected = Option.none<String>()
+        "None: Optional.toRoOption" {
+            val expected = RoOption.none<String>()
             val optional = Optional.empty<String>()
-            val actual = optional.toOption()
+            val actual = optional.toRoOption()
 
             actual shouldBe expected
         }
 
         "None: toOptional" {
             val expected = Optional.empty<String>()
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             val actual = option.toOptional()
 
             actual shouldBe expected
@@ -91,7 +91,7 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: fold" {
             val expected = "None"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             val actual = option.fold(
                 none = { expected },
                 some = { it }
@@ -102,7 +102,7 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: match" {
             val expected = "None"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.match({ actual = "None" }) {}
 
@@ -111,7 +111,7 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: filter" {
             val expected = true
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             val actual = option.filter { it == "hello world." }
 
             actual.isNone shouldBe expected
@@ -119,7 +119,7 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: map" {
             val expected = "None"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.map {
                 it.uppercase()
@@ -133,7 +133,7 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: mapOrElse" {
             val expected = "mapOrElse"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.mapOrElse(
                 fn = { it.uppercase() },
@@ -148,10 +148,10 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: andThen" {
             val expected = "None"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.andThen {
-                Option.tee { it.uppercase() }
+                RoOption.tee { it.uppercase() }
             }.match(
                 none = { actual = "None" },
                 some = {}
@@ -162,10 +162,10 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: orElse" {
             val expected = "orElse"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.orElse {
-                Option.tee { expected }
+                RoOption.tee { expected }
             }.match(
                 none = {},
                 some = { actual = it }
@@ -176,11 +176,11 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None: andThenOrElse" {
             val expected = "andThenOrElse"
-            val option = Option.none<Int>()
+            val option = RoOption.none<Int>()
             var actual = ""
             option.andThenOrElse(
-                fn = { Option.tee { "%s".format(it) } },
-                or = { Option.tee { expected } }
+                fn = { RoOption.tee { "%s".format(it) } },
+                or = { RoOption.tee { expected } }
             ).match(
                 none = {},
                 some = { actual = it }
@@ -191,10 +191,10 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None, None -> None: xor" {
             val expected = "xor"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.xor {
-                Option.tee { null }
+                RoOption.tee { null }
             }.match(
                 none = { actual = expected },
                 some = {}
@@ -205,10 +205,10 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None, Some -> Some: xor" {
             val expected = "xor"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.xor {
-                Option.tee { expected }
+                RoOption.tee { expected }
             }.match(
                 none = {},
                 some = { actual = it }
@@ -219,10 +219,10 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None, None -> None: zip" {
             val expected = "zip"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.zip {
-                Option.tee { null }
+                RoOption.tee { null }
             }.match(
                 none = { actual = expected },
                 some = {}
@@ -233,10 +233,10 @@ internal class NoneTest : StringSpec(), ISerializableUtil {
 
         "None, Some -> None: zip" {
             val expected = "zip"
-            val option = Option.none<String>()
+            val option = RoOption.none<String>()
             var actual = ""
             option.zip {
-                Option.tee { expected }
+                RoOption.tee { expected }
             }.match(
                 none = { actual = expected },
                 some = {}

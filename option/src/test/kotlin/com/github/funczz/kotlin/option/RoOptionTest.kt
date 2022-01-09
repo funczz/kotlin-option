@@ -4,41 +4,41 @@ import io.kotlintest.provided.ISerializableUtil
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 
-internal class OptionTest : StringSpec(), ISerializableUtil {
+internal class RoOptionTest : StringSpec(), ISerializableUtil {
 
     init {
 
-        "Option.none" {
+        "RoOption.none" {
             val expected = true
-            val actual = Option.none<String>()
+            val actual = RoOption.none<String>()
 
             actual.isNone shouldBe expected
         }
 
-        "Option.some" {
+        "RoOption.some" {
             val expected = true
-            val actual = Option.some { "hello world." }
+            val actual = RoOption.some { "hello world." }
 
             actual.isSome shouldBe expected
         }
 
-        "Option.tee -> None" {
+        "RoOption.tee -> None" {
             val expected = true
-            val actual = Option.tee { null }
+            val actual = RoOption.tee { null }
 
             actual.isNone shouldBe expected
         }
 
-        "Option.tee -> Some" {
+        "RoOption.tee -> Some" {
             val expected = true
-            val actual = Option.tee { "hello world." }
+            val actual = RoOption.tee { "hello world." }
 
             actual.isSome shouldBe expected
         }
 
         "flatten" {
             val expected = "hello world."
-            val option = Option.some { Option.some { expected } }
+            val option = RoOption.some { RoOption.some { expected } }
             val actual = option.flatten()
 
             actual.getOrThrow() shouldBe expected

@@ -4,10 +4,10 @@ import java.io.Serializable
 import java.util.*
 
 /**
- * Option シールドクラス:
+ * RoOption シールドクラス:
  * 実装クラスに None と Some を持つ。
  */
-sealed class Option<T : Any> : Serializable {
+sealed class RoOption<T : Any> : Serializable {
 
     /**
      * None かどうかを返す。
@@ -43,8 +43,8 @@ sealed class Option<T : Any> : Serializable {
     /**
      * Some の値を返す。
      * @return Some なら Some の 値、
-     *         None なら <code>OptionException</code> をスロー。
-     * @throws OptionException
+     *         None なら <code>RoOptionException</code> をスロー。
+     * @throws RoOptionException
      */
     abstract fun getOrThrow(): T
 
@@ -52,68 +52,68 @@ sealed class Option<T : Any> : Serializable {
      * Some かつ関数 fn の戻り値が true なら Some を返し、
      * それ以外は None を返す。
      * @param fn 引数に 値 T を持ち、型 Boolean を返す関数
-     * @return Option
+     * @return RoOption
      */
-    abstract fun filter(fn: (T) -> Boolean): Option<T>
+    abstract fun filter(fn: (T) -> Boolean): RoOption<T>
 
     /**
      * Some なら関数 fn の戻り値を持つ Some を返す
      * @param fn 引数に 値 T を持ち、型 U を返す関数
-     * @return Option
+     * @return RoOption
      */
-    abstract fun <U : Any> map(fn: (T) -> U): Option<U>
+    abstract fun <U : Any> map(fn: (T) -> U): RoOption<U>
 
     /**
      * Some なら関数 fn の戻り値を持つ Some を返し、
      * None なら関数 or の戻り値を持つ Some を返す。
      * @param fn 引数に 値 T を持ち、型 U を返す関数
      * @param or 型 U を返す関数
-     * @return Option
+     * @return RoOption
      */
-    abstract fun <U : Any> mapOrElse(fn: (T) -> U, or: () -> U): Option<U>
+    abstract fun <U : Any> mapOrElse(fn: (T) -> U, or: () -> U): RoOption<U>
 
     /**
      * Some なら関数 fn の戻り値を返す。
      * Some から None の変換が可能。
-     * @param fn 引数に 値 T を持ち、Option を返す関数
-     * @return Option
+     * @param fn 引数に 値 T を持ち、RoOption を返す関数
+     * @return RoOption
      */
-    abstract fun <U : Any> andThen(fn: (T) -> Option<U>): Option<U>
+    abstract fun <U : Any> andThen(fn: (T) -> RoOption<U>): RoOption<U>
 
     /**
      * None なら関数 fn の戻り値を返す。
      * None から Some の変換が可能。
-     * @param fn Option を返す関数
-     * @return Option
+     * @param fn RoOption を返す関数
+     * @return RoOption
      */
-    abstract fun orElse(fn: () -> Option<T>): Option<T>
+    abstract fun orElse(fn: () -> RoOption<T>): RoOption<T>
 
     /**
      * Some なら関数 fn の戻り値を返し、
      * None なら関数 or の戻り値を返す。
      * Some から None と None から Some の変換が可能。
-     * @param fn 引数に 値 T を持ち、Option を返す関数
-     * @param or Option を返す関数
-     * @return Option
+     * @param fn 引数に 値 T を持ち、RoOption を返す関数
+     * @param or RoOption を返す関数
+     * @return RoOption
      */
-    abstract fun <U : Any> andThenOrElse(fn: (T) -> Option<U>, or: () -> Option<U>): Option<U>
+    abstract fun <U : Any> andThenOrElse(fn: (T) -> RoOption<U>, or: () -> RoOption<U>): RoOption<U>
 
     /**
      * 自身と関数 fn の戻り値が、
      * Some と None またはその逆なら Some を返し、
      * Some 同士や None 同士なら None を返す。
-     * @param fn Option を返す関数
-     * @return Option
+     * @param fn RoOption を返す関数
+     * @return RoOption
      */
-    abstract fun xor(fn: () -> Option<T>): Option<T>
+    abstract fun xor(fn: () -> RoOption<T>): RoOption<T>
 
     /**
      * 自身と関数 fn の戻り値がSome 同士なら、
      * それらの値を持つ Pair を値とする Some 返す。
-     * @param fn Option を返す関数
-     * @return Option
+     * @param fn RoOption を返す関数
+     * @return RoOption
      */
-    abstract fun <U : Any> zip(fn: () -> Option<U>): Option<Pair<T, U>>
+    abstract fun <U : Any> zip(fn: () -> RoOption<U>): RoOption<Pair<T, U>>
 
     abstract override fun equals(other: Any?): Boolean
 
@@ -125,27 +125,27 @@ sealed class Option<T : Any> : Serializable {
 
         /**
          * None を返す。
-         * @return Option
+         * @return RoOption
          */
         @JvmStatic
-        fun <T : Any> none(): Option<T> = None()
+        fun <T : Any> none(): RoOption<T> = None()
 
         /**
          * 関数 fn の戻り値を値とする Some を返す。
          * @param fn 型 T を返す関数
-         * @return Option
+         * @return RoOption
          */
         @JvmStatic
-        fun <T : Any> some(fn: () -> T): Option<T> = Some(value = fn())
+        fun <T : Any> some(fn: () -> T): RoOption<T> = Some(value = fn())
 
         /**
          * 関数 fn の戻り値が null なら None を返し、
          * それ以外は戻り値を値とする Some を返す。
          * @param fn 型 T? を返す関数
-         * @return Option
+         * @return RoOption
          */
         @JvmStatic
-        fun <T : Any> tee(fn: () -> T?): Option<T> = when (val result = fn()) {
+        fun <T : Any> tee(fn: () -> T?): RoOption<T> = when (val result = fn()) {
             null -> none()
             else -> some { result }
         }
@@ -155,34 +155,34 @@ sealed class Option<T : Any> : Serializable {
 }
 
 /**
- * None クラス: 値を持たない Option クラス
+ * None クラス: 値を持たない RoOption クラス
  */
-class None<T : Any> : Option<T>() {
+class None<T : Any> : RoOption<T>() {
 
     override fun getOrElse(fn: () -> T): T = fn()
 
     override fun getOrNull(): T? = null
 
-    override fun getOrThrow(): T = throw OptionException(message = "None.getOrThrow")
+    override fun getOrThrow(): T = throw RoOptionException(message = "None.getOrThrow")
 
-    override fun filter(fn: (T) -> Boolean): Option<T> = this
+    override fun filter(fn: (T) -> Boolean): RoOption<T> = this
 
-    override fun <U : Any> map(fn: (T) -> U): Option<U> = none()
+    override fun <U : Any> map(fn: (T) -> U): RoOption<U> = none()
 
-    override fun <U : Any> mapOrElse(fn: (T) -> U, or: () -> U): Option<U> = some { or() }
+    override fun <U : Any> mapOrElse(fn: (T) -> U, or: () -> U): RoOption<U> = some { or() }
 
-    override fun <U : Any> andThen(fn: (T) -> Option<U>): Option<U> = none()
+    override fun <U : Any> andThen(fn: (T) -> RoOption<U>): RoOption<U> = none()
 
-    override fun orElse(fn: () -> Option<T>): Option<T> = fn()
+    override fun orElse(fn: () -> RoOption<T>): RoOption<T> = fn()
 
-    override fun <U : Any> andThenOrElse(fn: (T) -> Option<U>, or: () -> Option<U>) = or()
+    override fun <U : Any> andThenOrElse(fn: (T) -> RoOption<U>, or: () -> RoOption<U>) = or()
 
-    override fun xor(fn: () -> Option<T>): Option<T> = when (val result = fn()) {
+    override fun xor(fn: () -> RoOption<T>): RoOption<T> = when (val result = fn()) {
         is None<T> -> none()
         is Some<T> -> result
     }
 
-    override fun <U : Any> zip(fn: () -> Option<U>): Option<Pair<T, U>> = none()
+    override fun <U : Any> zip(fn: () -> RoOption<U>): RoOption<Pair<T, U>> = none()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -207,7 +207,7 @@ class None<T : Any> : Option<T>() {
 }
 
 /**
- * Some クラス: 値を持つ Option クラス
+ * Some クラス: 値を持つ RoOption クラス
  */
 class Some<T : Any>(
 
@@ -216,7 +216,7 @@ class Some<T : Any>(
      */
     val value: T
 
-) : Option<T>() {
+) : RoOption<T>() {
 
     override fun getOrElse(fn: () -> T): T = value
 
@@ -224,27 +224,27 @@ class Some<T : Any>(
 
     override fun getOrThrow(): T = value
 
-    override fun filter(fn: (T) -> Boolean): Option<T> = when (fn(value)) {
+    override fun filter(fn: (T) -> Boolean): RoOption<T> = when (fn(value)) {
         true -> this
         else -> none()
     }
 
-    override fun <U : Any> map(fn: (T) -> U): Option<U> = some { fn(value) }
+    override fun <U : Any> map(fn: (T) -> U): RoOption<U> = some { fn(value) }
 
-    override fun <U : Any> mapOrElse(fn: (T) -> U, or: () -> U): Option<U> = some { fn(value) }
+    override fun <U : Any> mapOrElse(fn: (T) -> U, or: () -> U): RoOption<U> = some { fn(value) }
 
-    override fun <U : Any> andThen(fn: (T) -> Option<U>): Option<U> = fn(value)
+    override fun <U : Any> andThen(fn: (T) -> RoOption<U>): RoOption<U> = fn(value)
 
-    override fun orElse(fn: () -> Option<T>): Option<T> = this
+    override fun orElse(fn: () -> RoOption<T>): RoOption<T> = this
 
-    override fun <U : Any> andThenOrElse(fn: (T) -> Option<U>, or: () -> Option<U>): Option<U> = fn(value)
+    override fun <U : Any> andThenOrElse(fn: (T) -> RoOption<U>, or: () -> RoOption<U>): RoOption<U> = fn(value)
 
-    override fun xor(fn: () -> Option<T>): Option<T> = when (fn()) {
+    override fun xor(fn: () -> RoOption<T>): RoOption<T> = when (fn()) {
         is None<T> -> this
         is Some<T> -> none()
     }
 
-    override fun <U : Any> zip(fn: () -> Option<U>): Option<Pair<T, U>> = when (val result = fn()) {
+    override fun <U : Any> zip(fn: () -> RoOption<U>): RoOption<Pair<T, U>> = when (val result = fn()) {
         is None<U> -> none()
         is Some<U> -> some { Pair(value, result.value) }
     }
