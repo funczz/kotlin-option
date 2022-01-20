@@ -38,13 +38,12 @@ inline fun <T : Any, R : Any> RoOption<T>.fold(none: () -> R, some: (T) -> R): R
  * Optional を RoOption に変換する。
  * @return RoOption
  */
-fun <T : Any> Optional<T>.toRoOption(): RoOption<T> = when {
-    this.isEmpty -> RoOption.none()
-    else -> RoOption.tee { get() }
+fun <T : Any> Optional<T>.toRoOption(): RoOption<T> = RoOption.tee {
+    if (isPresent) get() else null
 }
 
 /**
- * RoOption を RoOptional に変換する。
+ * RoOption を Optional に変換する。
  * @return Optional
  */
 fun <T : Any> RoOption<T>.toOptional(): Optional<T> {
